@@ -5,8 +5,11 @@
 #include <arpa/inet.h>  // inet_ntop
 #include <unistd.h>     // close, read, write
 #include <thread>
+#include <mutex>
 const int PORT = 8888;
 const int buffSize = 8192;
+std::mutex print_mut;
+
 void handle(int client_fd, sockaddr_in client_addr)
 {
     char client_ip[16];
@@ -20,20 +23,28 @@ void handle(int client_fd, sockaddr_in client_addr)
         ssize_t msg = recv(client_fd, buff, sizeof(buff) - 1, 0);
         if (msg > 0)
         {
-           std::cout << "[" << client_ip << "]: " << buff << std::endl;
+            {
+                std::lock_guard<std::mutex> lock(print_mut);
+                std::cout << "[" << client_ip << "]: " << buff << std::endl;
+            }
             send(client_fd, buff, msg, 0);
         }
         else if (msg == 0)
         {
-            std::cout << "Client disconnected." << std::endl;
+            {
+                std::lock_guard<std::mutex> lock(print_mut);
+                std::cout << "Client disconnected." << std::endl;
+            }
             break;
         }
         else
         {
-            std::cerr << "Recv error: " << strerror(errno) << std::endl;
+            {
+                std::lock_guard<std::mutex> lock(print_mut);
+                std::cerr << "Recv error: " << strerror(errno) << std::endl;
+            }
             break;
         }
-        
     }
     close(client_fd);
     std::cout << "Waiting for next connection..." << std::endl;
@@ -76,6 +87,5 @@ int main()
         }
         std::thread p(handle, client_fd, client_addr);
         p.detach();
-        
     }
 }
