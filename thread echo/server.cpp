@@ -6,6 +6,15 @@
 #include <unistd.h>     // close, read, write
 #include <thread>
 #include <mutex>
+#include <fcntl.h> 
+void setnonblocking(int fd) {
+    // 第一步：获取当前的所有标志位 (Snapshot)
+    int old_option = fcntl(fd, F_GETFL);
+    // 第二步：加上非阻塞标志 (Modify)
+    int new_option = old_option | O_NONBLOCK;
+    // 第三步：写回标志位 (Apply)
+    fcntl(fd, F_SETFL, new_option);
+}
 const int PORT = 8888;
 const int buffSize = 8192;
 std::mutex print_mut;
@@ -85,6 +94,7 @@ int main()
             std::cerr << "accept failed" << strerror(errno) << std::endl;
             continue;
         }
+        setnonblocking(client_fd);
         std::thread p(handle, client_fd, client_addr);
         p.detach();
     }
