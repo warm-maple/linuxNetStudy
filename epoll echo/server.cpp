@@ -78,7 +78,7 @@ int main()
                 }
                 setnonlock(client_fd);
                 char client_ip[16];
-                inet_ntop(AF_INET, &client_addr, client_ip, client_len);
+                inet_ntop(AF_INET, &client_addr.sin_addr, client_ip, sizeof(client_ip));
                 std::cout << "New Client: " << client_ip << ":" << ntohs(client_addr.sin_port) << std::endl;
                 epoll_event event;
                 event.events = EPOLLIN | EPOLLET;
@@ -91,40 +91,56 @@ int main()
                 }
             }
             else
-            {
-                if (events[i].events & (EPOLLERR | EPOLLHUP))
+            {    if (events[i].events & EPOLLIN)
+                {
+                    std::vector<char> buff;
+                    char buf[1024];
+                    ssize_t read_len;
+                    while (true)
+                    {
+                        memset(buf, 0, sizeof(buf));
+                        read_len = recv(client_fd, buf, 1023, 0);
+                        if (read_len > 0)
+                        {
+                            buff.insert(buff.end(), buf, buf + read_len);
+                        }
+                        else if (read_len == -1)
+                        {
+                            if (errno == EAGAIN || errno == EWOULDBLOCK)
+                            {
+                                std::cout << "data finish,EAGAIN" << std::endl;
+                                break;
+                            }
+                            else
+                            {
+                                perror("recv");
+                                close(client_fd);
+                                buff.clear();
+                                break;
+                            }
+                        }
+                        else if (read_len == 0)
+                        {
+                            close(client_fd);
+                            buff.clear();
+                            break;
+                        }
+                    }
+
+                    if (!buff.empty())
+                    {
+                        std::cout << "receive messige from " << client_fd <<"the length of the message is "<< buff.size()<< std::endl;
+                        std::cout << "Recv full msg:";
+                        std::cout.write(buff.data(), buff.size());
+                        std::cout << std::endl;
+                        send(client_fd, buff.data(), buff.size(), 0);
+                    }
+                }else if (events[i].events & (EPOLLERR | EPOLLHUP))
                 {
                     std::cout << "Client error/close fd: " << client_fd << std::endl;
                     close(client_fd);
                     continue;
-                }
-                if (events[i].events & EPOLLIN)
-                {
-                    std::vector<char> buff(buffSize);
-                    memset(buff.data(), 0, buff.size());
-                    ssize_t msg = recv(client_fd, buff.data(), buff.size(), 0);
-                    if (msg > 0)
-                    {
-                        std::cout << "receive messige from" << client_fd << std::endl;
-                        send(client_fd, buff.data(), msg, 0);
-                    }
-                    else if (msg == 0)
-                    {
-                        std::cout << "Client " << client_fd << " disconnected." << std::endl;
-                        close(client_fd);
-                    }
-                    else
-                    {
-                        if (errno == EAGAIN || errno == EWOULDBLOCK)
-                        {
-                        }
-                        else
-                        {
-                            perror("recv");
-                            close(client_fd);
-                        }
-                    }
-                }
+                }                             
             }
         }
     }
