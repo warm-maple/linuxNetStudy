@@ -91,7 +91,8 @@ int main()
                 }
             }
             else
-            {    if (events[i].events & EPOLLIN)
+            {
+                if (events[i].events & EPOLLIN)
                 {
                     std::vector<char> buff;
                     char buf[1024];
@@ -129,18 +130,19 @@ int main()
 
                     if (!buff.empty())
                     {
-                        std::cout << "receive messige from " << client_fd <<"the length of the message is "<< buff.size()<< std::endl;
+                        std::cout << "receive messige from " << client_fd << "the length of the message is " << buff.size() << std::endl;
                         std::cout << "Recv full msg:";
                         std::cout.write(buff.data(), buff.size());
                         std::cout << std::endl;
                         send(client_fd, buff.data(), buff.size(), 0);
                     }
-                }else if (events[i].events & (EPOLLERR | EPOLLHUP))
+                }
+                else if (events[i].events & (EPOLLERR | EPOLLHUP))
                 {
                     std::cout << "Client error/close fd: " << client_fd << std::endl;
                     close(client_fd);
                     continue;
-                }                             
+                }
             }
         }
     }
