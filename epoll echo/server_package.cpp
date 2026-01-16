@@ -85,7 +85,8 @@ public:
     explicit Socket(int fd) : fd_(fd) {}
     ~Socket()
     {
-        if (fd_ >= 0) close(fd_);
+        if (fd_ >= 0)
+            close(fd_);
     }
 
     int fd() const { return fd_; }
@@ -127,6 +128,7 @@ private:
 class TcpConnection
 {
 public:
+using CloseCallback = std::function<void(int)>;
     TcpConnection(int epfd, int sockfd)
         : socket_(new Socket(sockfd)),
           channel_(new Channel(epfd, sockfd))
@@ -135,8 +137,14 @@ public:
         channel_->setReadCallback(std::bind(&TcpConnection::handleRead, this));
         channel_->enableReading();
     }
-
+void setCloseCallback(const CloseCallback& cb) { closeCallback_ = cb; }
 private:
+    void handleClose() {
+        std::cout << "客户端(" << socket_->fd() << ")断开连接" << std::endl;
+        if (closeCallback_) {
+            closeCallback_(socket_->fd()); 
+        }
+    }
     void handleRead()
     {
         char buf[1024] = {0};
@@ -149,10 +157,16 @@ private:
         else if (n == 0)
         {
             std::cout << "客户端(" << socket_->fd() << ")断开连接" << std::endl;
+            handleClose();
+        }else{
+            if (errno != EAGAIN && errno != EWOULDBLOCK) {
+                perror("read error");
+                handleClose();
         }
-    }
+    }}
 
     std::unique_ptr<Socket> socket_;
+  CloseCallback closeCallback_;
     std::unique_ptr<Channel> channel_;
 };
 
@@ -196,39 +210,68 @@ private:
     Channel listenChannel_;
     NewConnectionCallback newConnectionCallback_;
 };
-
-int main()
+class eventloop
 {
-    int epfd = epoll_create1(0);
-    InetAddress listenAddr(8888);
-
-    Acceptor acceptor(epfd, listenAddr);
-
-    std::map<int, std::shared_ptr<TcpConnection>> connections;
-
-    acceptor.setNewConnectionCallback([&](int connfd, const InetAddress &addr) {
-        std::cout << "新连接建立！FD = " << connfd << std::endl;
-        auto conn = std::make_shared<TcpConnection>(epfd, connfd);
-        connections[connfd] = conn; 
-    });
-
-    std::cout << "Server start loop..." << std::endl;
-
-    const int MAX_EVENTS = 100;
-    std::vector<struct epoll_event> events(MAX_EVENTS);
-
-    while (true)
+public:
+    ~eventloop() { close(epfd); }
+    eventloop() : epfd(epoll_create1(0)), events(100)
     {
-        int n = epoll_wait(epfd, events.data(), MAX_EVENTS, -1);
-
-        for (int i = 0; i < n; ++i)
+    }
+    int getFd()
+    {
+        return epfd;
+    }
+    void loop()
+    {
+        while (true)
         {
-            Channel *activeChannel = static_cast<Channel *>(events[i].data.ptr);
-            activeChannel->setRevents(events[i].events);
-            activeChannel->handleEvent();
+            int n = epoll_wait(epfd, events.data(), 100, -1);
+
+            for (int i = 0; i < n; ++i)
+            {
+                Channel *activeChannel = static_cast<Channel *>(events[i].data.ptr);
+                activeChannel->setRevents(events[i].events);
+                activeChannel->handleEvent();
+            }
         }
     }
 
-    close(epfd);
+private:
+    int epfd;
+    std::vector<struct epoll_event> events;
+};
+class tcpServer
+{
+public:
+    tcpServer(eventloop &loop, InetAddress addr) : loop(loop), acceptor(loop.getFd(), addr)
+    {
+        acceptor.setNewConnectionCallback(
+            std::bind(&tcpServer::newConnection, this, std::placeholders::_1, std::placeholders::_2));
+    }
+
+private:
+void removeConnection(int connfd) {
+        std::cout << "TcpServer 移除连接 FD=" << connfd << std::endl;
+        connections.erase(connfd); 
+    }
+    void newConnection(int connfd, const InetAddress &addr)
+    {
+        
+                                          
+        std::cout << "新连接建立！FD = " << connfd << std::endl;
+        auto conn = std::make_shared<TcpConnection>(loop.getFd(), connfd);
+        conn->setCloseCallback(std::bind(&tcpServer::removeConnection, this, std::placeholders::_1));
+        connections[connfd] = conn;
+    }
+    eventloop &loop;
+    Acceptor acceptor;
+    std::map<int, std::shared_ptr<TcpConnection>> connections;
+};
+int main()
+{
+    eventloop loop;
+    InetAddress addr(8888);
+    tcpServer server(loop, addr);
+    loop.loop();
     return 0;
 }
