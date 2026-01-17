@@ -124,50 +124,102 @@ public:
 private:
     int fd_;
 };
-
-class TcpConnection
+class Buffer
 {
 public:
-using CloseCallback = std::function<void(int)>;
+    
+    Buffer() { buff.reserve(8192); }
+    size_t size() { return buff.size(); }
+    void buffclear(){
+        buff.clear();
+    }
+    auto getMes()
+    {
+        return buff.data();
+    }
+   int read(int client_fd)
+    {
+        ssize_t read_len;
+        while (true)
+        {       char temp_buf[1024];
+            memset(temp_buf, 0, sizeof(temp_buf));
+            read_len = recv(client_fd, temp_buf, 1023, 0);
+            if (read_len > 0)
+            {
+                buff.insert(buff.end(), temp_buf, temp_buf + read_len);
+            }
+            else if (read_len == -1)
+            {
+                if (errno == EAGAIN || errno == EWOULDBLOCK)
+                {
+                    break;
+                }
+                return -1;
+            }
+            else if (read_len == 0)
+            {
+                return 0;
+            }
+        }return buff.size();
+        
+    }
+
+private:
+    std::vector<char> buff;
+
+};
+class TcpConnection : public std::enable_shared_from_this<TcpConnection>
+{
+public:
+    using CloseCallback = std::function<void(int)>;
     TcpConnection(int epfd, int sockfd)
         : socket_(new Socket(sockfd)),
-          channel_(new Channel(epfd, sockfd))
+          channel_(new Channel(epfd, sockfd)), buff()
     {
         socket_->setNonBlock();
         channel_->setReadCallback(std::bind(&TcpConnection::handleRead, this));
         channel_->enableReading();
     }
-void setCloseCallback(const CloseCallback& cb) { closeCallback_ = cb; }
+    void setCloseCallback(const CloseCallback &cb) { closeCallback_ = cb; }
+
 private:
-    void handleClose() {
+    void handleClose()
+    {
         std::cout << "客户端(" << socket_->fd() << ")断开连接" << std::endl;
-        if (closeCallback_) {
-            closeCallback_(socket_->fd()); 
+        if (closeCallback_)
+        {
+            closeCallback_(socket_->fd());
         }
     }
     void handleRead()
-    {
-        char buf[1024] = {0};
-        ssize_t n = read(socket_->fd(), buf, sizeof(buf));
+    {   auto guard = shared_from_this();
+        ssize_t n = buff.read(socket_->fd());
         if (n > 0)
         {
-            std::cout << "收到客户端(" << socket_->fd() << ")消息: " << buf << std::endl;
-            write(socket_->fd(), buf, n);
+            std::cout << "收到客户端(" << socket_->fd() << ")消息: " << buff.getMes() << std::endl;
+            write(socket_->fd(), buff.getMes(), n);
+            buff.buffclear();
         }
         else if (n == 0)
         {
             std::cout << "客户端(" << socket_->fd() << ")断开连接" << std::endl;
             handleClose();
-        }else{
-            if (errno != EAGAIN && errno != EWOULDBLOCK) {
+            buff.buffclear();
+        }
+        else
+        {
+            if (errno != EAGAIN && errno != EWOULDBLOCK)
+            {
                 perror("read error");
                 handleClose();
+            }
         }
-    }}
+    }
 
     std::unique_ptr<Socket> socket_;
-  CloseCallback closeCallback_;
+    CloseCallback closeCallback_;
     std::unique_ptr<Channel> channel_;
+    Buffer buff;
 };
 
 class Acceptor
@@ -210,11 +262,11 @@ private:
     Channel listenChannel_;
     NewConnectionCallback newConnectionCallback_;
 };
-class eventloop
+class EventLoop
 {
 public:
-    ~eventloop() { close(epfd); }
-    eventloop() : epfd(epoll_create1(0)), events(100)
+    ~EventLoop() { close(epfd); }
+    EventLoop() : epfd(epoll_create1(0)), events(100)
     {
     }
     int getFd()
@@ -240,38 +292,39 @@ private:
     int epfd;
     std::vector<struct epoll_event> events;
 };
-class tcpServer
+class TcpServer
 {
 public:
-    tcpServer(eventloop &loop, InetAddress addr) : loop(loop), acceptor(loop.getFd(), addr)
+    TcpServer(EventLoop &loop, InetAddress addr) : loop(loop), acceptor(loop.getFd(), addr)
     {
         acceptor.setNewConnectionCallback(
-            std::bind(&tcpServer::newConnection, this, std::placeholders::_1, std::placeholders::_2));
+            std::bind(&TcpServer::newConnection, this, std::placeholders::_1, std::placeholders::_2));
     }
 
 private:
-void removeConnection(int connfd) {
+    void removeConnection(int connfd)
+    {
         std::cout << "TcpServer 移除连接 FD=" << connfd << std::endl;
-        connections.erase(connfd); 
+        connections.erase(connfd);
     }
     void newConnection(int connfd, const InetAddress &addr)
     {
-        
-                                          
+
         std::cout << "新连接建立！FD = " << connfd << std::endl;
         auto conn = std::make_shared<TcpConnection>(loop.getFd(), connfd);
-        conn->setCloseCallback(std::bind(&tcpServer::removeConnection, this, std::placeholders::_1));
+        conn->setCloseCallback(std::bind(&TcpServer::removeConnection, this, std::placeholders::_1));
         connections[connfd] = conn;
     }
-    eventloop &loop;
+    EventLoop &loop;
     Acceptor acceptor;
     std::map<int, std::shared_ptr<TcpConnection>> connections;
 };
+
 int main()
 {
-    eventloop loop;
+    EventLoop loop;
     InetAddress addr(8888);
-    tcpServer server(loop, addr);
+    TcpServer server(loop, addr);
     loop.loop();
     return 0;
 }
