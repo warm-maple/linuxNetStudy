@@ -1,0 +1,4 @@
+/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles/server.dir
+/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles/server_test.dir
+/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles/edit_cache.dir
+/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles/rebuild_cache.dir
