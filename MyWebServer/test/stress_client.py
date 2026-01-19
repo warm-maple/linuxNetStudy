@@ -47,7 +47,7 @@ async def worker(idx, host, port, payload, results, sem):
             sem.release()
 
 async def run_all(host, port, connections, size, concurrency):
-    payload = b'A' * size
+    payload = b'A' * (size - 1) + b'\n'
     results = []
     sem = asyncio.Semaphore(concurrency) if concurrency and concurrency < connections else None
     tasks = []

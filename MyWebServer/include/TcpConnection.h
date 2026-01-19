@@ -15,7 +15,8 @@ public:
     ~TcpConnection();
 
     void setCloseCallback(const CloseCallback &cb);
-
+    void send(const std::string &msg);
+    void handleWrite();
 private:
     void handleClose();
     void handleRead();
@@ -23,5 +24,6 @@ private:
     std::unique_ptr<Socket> socket_;
     CloseCallback closeCallback_;
     std::unique_ptr<Channel> channel_;
-    Buffer buff;
+    Buffer input_buff;
+    Buffer output_buff;
 };

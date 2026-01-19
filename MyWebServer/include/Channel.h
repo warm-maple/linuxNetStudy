@@ -17,6 +17,10 @@ public:
     void removeFromEpoll();
     void setRevents(int rev);
     void handleEvent();
+    void enableWriting();
+    void disableWriting();
+    bool isWriting() const;
+    void setWriteCallback(EventCallback cb);
 
 private:
     void update();
@@ -28,4 +32,5 @@ private:
     bool inEpoll_;
     EventCallback readCallback_;
     struct epoll_event ev;
+    EventCallback writeCallback_;
 };

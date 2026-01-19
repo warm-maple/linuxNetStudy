@@ -19,7 +19,7 @@ Channel::~Channel()
 }
 
 void Channel::setReadCallback(EventCallback cb) { readCallback_ = std::move(cb); }
-
+void Channel::setWriteCallback(EventCallback cb) { writeCallback_ = std::move(cb); }
 void Channel::enableReading()
 {
     events_ |= EPOLLIN | EPOLLET;
@@ -44,6 +44,7 @@ void Channel::handleEvent()
         if (readCallback_)
             readCallback_();
     }
+    if (revents_ & EPOLLOUT) { if (writeCallback_) writeCallback_(); }
 }
 
 void Channel::update()
@@ -66,3 +67,6 @@ void Channel::update()
             perror("epoll_ctl MOD");
     }
 }
+void Channel::enableWriting() { events_ |= EPOLLOUT; update(); }
+void Channel::disableWriting() { events_ &= ~EPOLLOUT; update(); }
+bool Channel::isWriting() const { return events_ & EPOLLOUT; }
