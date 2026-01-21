@@ -26,9 +26,9 @@ ssize_t Buffer::read(int client_fd)
     ssize_t read_len;
     while (true)
     {
-        char temp_buf[1024];
+        char temp_buf[65536];
         memset(temp_buf, 0, sizeof(temp_buf));
-        read_len = recv(client_fd, temp_buf, 1023, 0);
+        read_len = recv(client_fd, temp_buf, 65535, 0);
         if (read_len > 0)
         {
             write(temp_buf, read_len);
@@ -58,7 +58,7 @@ void Buffer::retrecv(size_t len){
         // all data consumed, reset buffer
         buff.clear();
         last = first = 0;
-        buff.reserve(1024);
+        buff.reserve(8192);
     }
 }
 

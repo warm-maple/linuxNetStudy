@@ -129,26 +129,12 @@ server/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/build
 .PHONY : server/fast
 
-#=============================================================================
-# Target rules for targets named server_test
-
-# Build rule for target.
-server_test: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 server_test
-.PHONY : server_test
-
-# fast build rule for target.
-server_test/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/build
-.PHONY : server_test/fast
-
 src/Acceptor.o: src/Acceptor.cpp.o
 .PHONY : src/Acceptor.o
 
 # target to build an object file
 src/Acceptor.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Acceptor.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/Acceptor.cpp.o
 .PHONY : src/Acceptor.cpp.o
 
 src/Acceptor.i: src/Acceptor.cpp.i
@@ -157,7 +143,6 @@ src/Acceptor.i: src/Acceptor.cpp.i
 # target to preprocess a source file
 src/Acceptor.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Acceptor.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/Acceptor.cpp.i
 .PHONY : src/Acceptor.cpp.i
 
 src/Acceptor.s: src/Acceptor.cpp.s
@@ -166,7 +151,6 @@ src/Acceptor.s: src/Acceptor.cpp.s
 # target to generate assembly for a file
 src/Acceptor.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Acceptor.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/Acceptor.cpp.s
 .PHONY : src/Acceptor.cpp.s
 
 src/Buffer.o: src/Buffer.cpp.o
@@ -175,7 +159,6 @@ src/Buffer.o: src/Buffer.cpp.o
 # target to build an object file
 src/Buffer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Buffer.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/Buffer.cpp.o
 .PHONY : src/Buffer.cpp.o
 
 src/Buffer.i: src/Buffer.cpp.i
@@ -184,7 +167,6 @@ src/Buffer.i: src/Buffer.cpp.i
 # target to preprocess a source file
 src/Buffer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Buffer.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/Buffer.cpp.i
 .PHONY : src/Buffer.cpp.i
 
 src/Buffer.s: src/Buffer.cpp.s
@@ -193,7 +175,6 @@ src/Buffer.s: src/Buffer.cpp.s
 # target to generate assembly for a file
 src/Buffer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Buffer.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/Buffer.cpp.s
 .PHONY : src/Buffer.cpp.s
 
 src/Channel.o: src/Channel.cpp.o
@@ -202,7 +183,6 @@ src/Channel.o: src/Channel.cpp.o
 # target to build an object file
 src/Channel.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Channel.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/Channel.cpp.o
 .PHONY : src/Channel.cpp.o
 
 src/Channel.i: src/Channel.cpp.i
@@ -211,7 +191,6 @@ src/Channel.i: src/Channel.cpp.i
 # target to preprocess a source file
 src/Channel.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Channel.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/Channel.cpp.i
 .PHONY : src/Channel.cpp.i
 
 src/Channel.s: src/Channel.cpp.s
@@ -220,7 +199,6 @@ src/Channel.s: src/Channel.cpp.s
 # target to generate assembly for a file
 src/Channel.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Channel.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/Channel.cpp.s
 .PHONY : src/Channel.cpp.s
 
 src/EventLoop.o: src/EventLoop.cpp.o
@@ -229,7 +207,6 @@ src/EventLoop.o: src/EventLoop.cpp.o
 # target to build an object file
 src/EventLoop.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/EventLoop.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/EventLoop.cpp.o
 .PHONY : src/EventLoop.cpp.o
 
 src/EventLoop.i: src/EventLoop.cpp.i
@@ -238,7 +215,6 @@ src/EventLoop.i: src/EventLoop.cpp.i
 # target to preprocess a source file
 src/EventLoop.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/EventLoop.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/EventLoop.cpp.i
 .PHONY : src/EventLoop.cpp.i
 
 src/EventLoop.s: src/EventLoop.cpp.s
@@ -247,7 +223,6 @@ src/EventLoop.s: src/EventLoop.cpp.s
 # target to generate assembly for a file
 src/EventLoop.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/EventLoop.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/EventLoop.cpp.s
 .PHONY : src/EventLoop.cpp.s
 
 src/InetAddress.o: src/InetAddress.cpp.o
@@ -256,7 +231,6 @@ src/InetAddress.o: src/InetAddress.cpp.o
 # target to build an object file
 src/InetAddress.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/InetAddress.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/InetAddress.cpp.o
 .PHONY : src/InetAddress.cpp.o
 
 src/InetAddress.i: src/InetAddress.cpp.i
@@ -265,7 +239,6 @@ src/InetAddress.i: src/InetAddress.cpp.i
 # target to preprocess a source file
 src/InetAddress.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/InetAddress.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/InetAddress.cpp.i
 .PHONY : src/InetAddress.cpp.i
 
 src/InetAddress.s: src/InetAddress.cpp.s
@@ -274,7 +247,6 @@ src/InetAddress.s: src/InetAddress.cpp.s
 # target to generate assembly for a file
 src/InetAddress.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/InetAddress.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/InetAddress.cpp.s
 .PHONY : src/InetAddress.cpp.s
 
 src/Socket.o: src/Socket.cpp.o
@@ -283,7 +255,6 @@ src/Socket.o: src/Socket.cpp.o
 # target to build an object file
 src/Socket.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Socket.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/Socket.cpp.o
 .PHONY : src/Socket.cpp.o
 
 src/Socket.i: src/Socket.cpp.i
@@ -292,7 +263,6 @@ src/Socket.i: src/Socket.cpp.i
 # target to preprocess a source file
 src/Socket.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Socket.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/Socket.cpp.i
 .PHONY : src/Socket.cpp.i
 
 src/Socket.s: src/Socket.cpp.s
@@ -301,7 +271,6 @@ src/Socket.s: src/Socket.cpp.s
 # target to generate assembly for a file
 src/Socket.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/Socket.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/Socket.cpp.s
 .PHONY : src/Socket.cpp.s
 
 src/TcpConnection.o: src/TcpConnection.cpp.o
@@ -310,7 +279,6 @@ src/TcpConnection.o: src/TcpConnection.cpp.o
 # target to build an object file
 src/TcpConnection.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/TcpConnection.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/TcpConnection.cpp.o
 .PHONY : src/TcpConnection.cpp.o
 
 src/TcpConnection.i: src/TcpConnection.cpp.i
@@ -319,7 +287,6 @@ src/TcpConnection.i: src/TcpConnection.cpp.i
 # target to preprocess a source file
 src/TcpConnection.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/TcpConnection.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/TcpConnection.cpp.i
 .PHONY : src/TcpConnection.cpp.i
 
 src/TcpConnection.s: src/TcpConnection.cpp.s
@@ -328,7 +295,6 @@ src/TcpConnection.s: src/TcpConnection.cpp.s
 # target to generate assembly for a file
 src/TcpConnection.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/TcpConnection.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/TcpConnection.cpp.s
 .PHONY : src/TcpConnection.cpp.s
 
 src/TcpServer.o: src/TcpServer.cpp.o
@@ -337,7 +303,6 @@ src/TcpServer.o: src/TcpServer.cpp.o
 # target to build an object file
 src/TcpServer.cpp.o:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/TcpServer.cpp.o
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/TcpServer.cpp.o
 .PHONY : src/TcpServer.cpp.o
 
 src/TcpServer.i: src/TcpServer.cpp.i
@@ -346,7 +311,6 @@ src/TcpServer.i: src/TcpServer.cpp.i
 # target to preprocess a source file
 src/TcpServer.cpp.i:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/TcpServer.cpp.i
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/TcpServer.cpp.i
 .PHONY : src/TcpServer.cpp.i
 
 src/TcpServer.s: src/TcpServer.cpp.s
@@ -355,7 +319,6 @@ src/TcpServer.s: src/TcpServer.cpp.s
 # target to generate assembly for a file
 src/TcpServer.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/TcpServer.cpp.s
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/src/TcpServer.cpp.s
 .PHONY : src/TcpServer.cpp.s
 
 src/main.o: src/main.cpp.o
@@ -382,30 +345,6 @@ src/main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/main.cpp.s
 .PHONY : src/main.cpp.s
 
-test/main.o: test/main.cpp.o
-.PHONY : test/main.o
-
-# target to build an object file
-test/main.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/test/main.cpp.o
-.PHONY : test/main.cpp.o
-
-test/main.i: test/main.cpp.i
-.PHONY : test/main.i
-
-# target to preprocess a source file
-test/main.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/test/main.cpp.i
-.PHONY : test/main.cpp.i
-
-test/main.s: test/main.cpp.s
-.PHONY : test/main.s
-
-# target to generate assembly for a file
-test/main.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/server_test.dir/build.make CMakeFiles/server_test.dir/test/main.cpp.s
-.PHONY : test/main.cpp.s
-
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -415,7 +354,6 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... server"
-	@echo "... server_test"
 	@echo "... src/Acceptor.o"
 	@echo "... src/Acceptor.i"
 	@echo "... src/Acceptor.s"
@@ -443,9 +381,6 @@ help:
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"
-	@echo "... test/main.o"
-	@echo "... test/main.i"
-	@echo "... test/main.s"
 .PHONY : help
 
 

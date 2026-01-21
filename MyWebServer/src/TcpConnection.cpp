@@ -27,7 +27,9 @@ void TcpConnection::handleClose()
         closeCallback_(socket_->fd());
     }
 }
-
+void TcpConnection::setMessageCallBack(const TcpConnection::MessageCallBack &cb) {
+    messageCallBack = cb;
+}
 void TcpConnection::handleRead()
 {
     auto guard = shared_from_this();
@@ -35,23 +37,8 @@ void TcpConnection::handleRead()
     std::cout << "收到客户端(" << socket_->fd() << ")消息" << std::endl;
     if (n > 0)
     {
-
-        while (true)
-        {
-            std::string msg = input_buff.getMes();
-            size_t pos = msg.find('\n');
-            if (pos != std::string::npos)
-            {
-                size_t len = pos + 1; // length within the returned msg (which starts from unread offset)
-                std::string one_msg = msg.substr(0, len);
-                std::cout << "处理完整包: " << one_msg;
-                this->send(one_msg);
-                input_buff.retrecv(len);
-            }
-            else
-            {
-                break;
-            }
+        if(messageCallBack){
+            messageCallBack( shared_from_this(),&input_buff);
         }
     }
     else if (n == 0)

@@ -9,7 +9,9 @@ TcpServer::TcpServer(EventLoop &loop_, InetAddress addr) : loop(loop_), acceptor
 }
 
 TcpServer::~TcpServer() {}
-
+void TcpServer::setMessageCallback(const std::function<void(const std::shared_ptr<TcpConnection>&, Buffer*)>& cc){
+    cb = cc;
+}
 void TcpServer::removeConnection(int connfd)
 {
     std::cout << "TcpServer 移除连接 FD=" << connfd << std::endl;
@@ -20,6 +22,7 @@ void TcpServer::newConnection(int connfd, const InetAddress &addr)
 {
     std::cout << "新连接建立！FD = " << connfd << std::endl;
     auto conn = std::make_shared<TcpConnection>(loop.getFd(), connfd);
+    conn->setMessageCallBack(cb);
     conn->setCloseCallback(std::bind(&TcpServer::removeConnection, this, std::placeholders::_1));
     connections[connfd] = conn;
 }
