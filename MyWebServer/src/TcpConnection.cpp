@@ -61,7 +61,7 @@ void TcpConnection::send(const std::string &msg)
 {
     size_t nwrote = 0;
     size_t remaining = msg.size();
-    if (!channel_->isWriting() && output_buff.getReadLen() == 0) {
+    if (!channel_->isWriting() && output_buff.readableBytes() == 0) {
         nwrote = ::send(socket_->fd(), msg.data(), msg.size(), 0);
         if (nwrote >= 0) {
             remaining = msg.size() - nwrote;
@@ -79,10 +79,10 @@ void TcpConnection::send(const std::string &msg)
 }
 void TcpConnection::handleWrite(){
     if (channel_->isWriting()) {
-        ssize_t n = ::send(socket_->fd(), output_buff.data(), output_buff.getReadLen(), 0);
+        ssize_t n = ::send(socket_->fd(), output_buff.peek(), output_buff.readableBytes(), 0);
         if (n > 0) {
             output_buff.retrecv(n); 
-            if (output_buff.getReadLen() == 0) {
+            if (output_buff.readableBytes() == 0) {
                 channel_->disableWriting();
             }
         }

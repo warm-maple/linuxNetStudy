@@ -12,7 +12,7 @@ void Buffer::buffclear() { buff.clear(); first = last = 0; }
 
 std::string Buffer::getMes() const { return (last > first) ? std::string(buff.begin() + first, buff.begin() + last) : std::string(); }
 
-size_t Buffer::getReadLen() { return (last >= first) ? (last - first) : 0; }
+size_t Buffer::readableBytes() const { return (last >= first) ? (last - first) : 0; }
 
 void Buffer::write(const char *buf, ssize_t len) {
     if (len <= 0) return;
@@ -46,7 +46,7 @@ ssize_t Buffer::read(int client_fd)
             return 0;
         }
     }
-    return static_cast<ssize_t>(getReadLen());
+    return static_cast<ssize_t>(readableBytes());
 }
 
 size_t Buffer::getBuffRead() { return first; }
@@ -62,4 +62,12 @@ void Buffer::retrecv(size_t len){
     }
 }
 
-const char* Buffer::data() const { return (last > first) ? (buff.data() + first) : nullptr; }
+const char* Buffer::peek() const { return (last > first) ? (buff.data() + first) : nullptr; }
+
+void Buffer::retrieveUntil(const char* end) {
+    // 计算需要移动的字节数
+    const char* begin = peek();
+    if (begin && end > begin) {
+        retrecv(static_cast<size_t>(end - begin));  // 复用已有的 retrecv()
+    }
+}

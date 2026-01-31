@@ -225,6 +225,30 @@ src/EventLoop.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/EventLoop.cpp.s
 .PHONY : src/EventLoop.cpp.s
 
+src/HttpContext.o: src/HttpContext.cpp.o
+.PHONY : src/HttpContext.o
+
+# target to build an object file
+src/HttpContext.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/HttpContext.cpp.o
+.PHONY : src/HttpContext.cpp.o
+
+src/HttpContext.i: src/HttpContext.cpp.i
+.PHONY : src/HttpContext.i
+
+# target to preprocess a source file
+src/HttpContext.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/HttpContext.cpp.i
+.PHONY : src/HttpContext.cpp.i
+
+src/HttpContext.s: src/HttpContext.cpp.s
+.PHONY : src/HttpContext.s
+
+# target to generate assembly for a file
+src/HttpContext.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/HttpContext.cpp.s
+.PHONY : src/HttpContext.cpp.s
+
 src/InetAddress.o: src/InetAddress.cpp.o
 .PHONY : src/InetAddress.o
 
@@ -366,6 +390,9 @@ help:
 	@echo "... src/EventLoop.o"
 	@echo "... src/EventLoop.i"
 	@echo "... src/EventLoop.s"
+	@echo "... src/HttpContext.o"
+	@echo "... src/HttpContext.i"
+	@echo "... src/HttpContext.s"
 	@echo "... src/InetAddress.o"
 	@echo "... src/InetAddress.i"
 	@echo "... src/InetAddress.s"

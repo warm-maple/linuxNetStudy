@@ -20,11 +20,12 @@ public:
     ssize_t read(int client_fd);
 
     // 零拷贝访问（返回当前未读数据的指针和长度）
-    const char* data() const;
+    const char* peek() const;            // 返回当前读指针位置
+    size_t readableBytes() const;        // 返回可读字节数
     size_t getBuffRead();
-    size_t getReadLen();
     void write(const char *buf, ssize_t len);
-    void retrecv(size_t len);
+    void retrecv(size_t len);            // 移动读指针（按长度）
+    void retrieveUntil(const char* end); // 移动读指针到指定位置
 private:
     std::vector<char> buff;
     size_t first;

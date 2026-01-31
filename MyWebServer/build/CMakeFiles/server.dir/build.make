@@ -139,10 +139,24 @@ CMakeFiles/server.dir/src/EventLoop.cpp.s: cmake_force
 	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/EventLoop.cpp.s"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lls/workspace/Linuxnet.study/MyWebServer/src/EventLoop.cpp -o CMakeFiles/server.dir/src/EventLoop.cpp.s
 
+CMakeFiles/server.dir/src/HttpContext.cpp.o: CMakeFiles/server.dir/flags.make
+CMakeFiles/server.dir/src/HttpContext.cpp.o: ../src/HttpContext.cpp
+CMakeFiles/server.dir/src/HttpContext.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/server.dir/src/HttpContext.cpp.o"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/src/HttpContext.cpp.o -MF CMakeFiles/server.dir/src/HttpContext.cpp.o.d -o CMakeFiles/server.dir/src/HttpContext.cpp.o -c /home/lls/workspace/Linuxnet.study/MyWebServer/src/HttpContext.cpp
+
+CMakeFiles/server.dir/src/HttpContext.cpp.i: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Preprocessing CXX source to CMakeFiles/server.dir/src/HttpContext.cpp.i"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -E /home/lls/workspace/Linuxnet.study/MyWebServer/src/HttpContext.cpp > CMakeFiles/server.dir/src/HttpContext.cpp.i
+
+CMakeFiles/server.dir/src/HttpContext.cpp.s: cmake_force
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green "Compiling CXX source to assembly CMakeFiles/server.dir/src/HttpContext.cpp.s"
+	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -S /home/lls/workspace/Linuxnet.study/MyWebServer/src/HttpContext.cpp -o CMakeFiles/server.dir/src/HttpContext.cpp.s
+
 CMakeFiles/server.dir/src/InetAddress.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/src/InetAddress.cpp.o: ../src/InetAddress.cpp
 CMakeFiles/server.dir/src/InetAddress.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_6) "Building CXX object CMakeFiles/server.dir/src/InetAddress.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/server.dir/src/InetAddress.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/src/InetAddress.cpp.o -MF CMakeFiles/server.dir/src/InetAddress.cpp.o.d -o CMakeFiles/server.dir/src/InetAddress.cpp.o -c /home/lls/workspace/Linuxnet.study/MyWebServer/src/InetAddress.cpp
 
 CMakeFiles/server.dir/src/InetAddress.cpp.i: cmake_force
@@ -156,7 +170,7 @@ CMakeFiles/server.dir/src/InetAddress.cpp.s: cmake_force
 CMakeFiles/server.dir/src/Socket.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/src/Socket.cpp.o: ../src/Socket.cpp
 CMakeFiles/server.dir/src/Socket.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_7) "Building CXX object CMakeFiles/server.dir/src/Socket.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/server.dir/src/Socket.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/src/Socket.cpp.o -MF CMakeFiles/server.dir/src/Socket.cpp.o.d -o CMakeFiles/server.dir/src/Socket.cpp.o -c /home/lls/workspace/Linuxnet.study/MyWebServer/src/Socket.cpp
 
 CMakeFiles/server.dir/src/Socket.cpp.i: cmake_force
@@ -170,7 +184,7 @@ CMakeFiles/server.dir/src/Socket.cpp.s: cmake_force
 CMakeFiles/server.dir/src/TcpConnection.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/src/TcpConnection.cpp.o: ../src/TcpConnection.cpp
 CMakeFiles/server.dir/src/TcpConnection.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_8) "Building CXX object CMakeFiles/server.dir/src/TcpConnection.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/server.dir/src/TcpConnection.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/src/TcpConnection.cpp.o -MF CMakeFiles/server.dir/src/TcpConnection.cpp.o.d -o CMakeFiles/server.dir/src/TcpConnection.cpp.o -c /home/lls/workspace/Linuxnet.study/MyWebServer/src/TcpConnection.cpp
 
 CMakeFiles/server.dir/src/TcpConnection.cpp.i: cmake_force
@@ -184,7 +198,7 @@ CMakeFiles/server.dir/src/TcpConnection.cpp.s: cmake_force
 CMakeFiles/server.dir/src/TcpServer.cpp.o: CMakeFiles/server.dir/flags.make
 CMakeFiles/server.dir/src/TcpServer.cpp.o: ../src/TcpServer.cpp
 CMakeFiles/server.dir/src/TcpServer.cpp.o: CMakeFiles/server.dir/compiler_depend.ts
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_9) "Building CXX object CMakeFiles/server.dir/src/TcpServer.cpp.o"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --progress-dir=/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Building CXX object CMakeFiles/server.dir/src/TcpServer.cpp.o"
 	/usr/bin/c++ $(CXX_DEFINES) $(CXX_INCLUDES) $(CXX_FLAGS) -MD -MT CMakeFiles/server.dir/src/TcpServer.cpp.o -MF CMakeFiles/server.dir/src/TcpServer.cpp.o.d -o CMakeFiles/server.dir/src/TcpServer.cpp.o -c /home/lls/workspace/Linuxnet.study/MyWebServer/src/TcpServer.cpp
 
 CMakeFiles/server.dir/src/TcpServer.cpp.i: cmake_force
@@ -202,6 +216,7 @@ server_OBJECTS = \
 "CMakeFiles/server.dir/src/Buffer.cpp.o" \
 "CMakeFiles/server.dir/src/Channel.cpp.o" \
 "CMakeFiles/server.dir/src/EventLoop.cpp.o" \
+"CMakeFiles/server.dir/src/HttpContext.cpp.o" \
 "CMakeFiles/server.dir/src/InetAddress.cpp.o" \
 "CMakeFiles/server.dir/src/Socket.cpp.o" \
 "CMakeFiles/server.dir/src/TcpConnection.cpp.o" \
@@ -215,13 +230,14 @@ server: CMakeFiles/server.dir/src/Acceptor.cpp.o
 server: CMakeFiles/server.dir/src/Buffer.cpp.o
 server: CMakeFiles/server.dir/src/Channel.cpp.o
 server: CMakeFiles/server.dir/src/EventLoop.cpp.o
+server: CMakeFiles/server.dir/src/HttpContext.cpp.o
 server: CMakeFiles/server.dir/src/InetAddress.cpp.o
 server: CMakeFiles/server.dir/src/Socket.cpp.o
 server: CMakeFiles/server.dir/src/TcpConnection.cpp.o
 server: CMakeFiles/server.dir/src/TcpServer.cpp.o
 server: CMakeFiles/server.dir/build.make
 server: CMakeFiles/server.dir/link.txt
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_10) "Linking CXX executable server"
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --green --bold --progress-dir=/home/lls/workspace/Linuxnet.study/MyWebServer/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_11) "Linking CXX executable server"
 	$(CMAKE_COMMAND) -E cmake_link_script CMakeFiles/server.dir/link.txt --verbose=$(VERBOSE)
 
 # Rule to build all files generated by this target.
