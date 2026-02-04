@@ -24,6 +24,16 @@ public:
         return method_ != kInvalid;
     }
     Method getMethod() const { return method_; }
+    const char* methodString() const {
+        switch (method_) {
+            case kGet: return "GET";
+            case kPost: return "POST";
+            case kHead: return "HEAD";
+            case kPut: return "PUT";
+            case kDelete: return "DELETE";
+            default: return "INVALID";
+        }
+    }
 
     void setPath(const char* start, const char* end) { path_.assign(start, end); }
     const std::string& path() const { return path_; }
@@ -31,9 +41,10 @@ public:
     void addHeader(const char* start, const char* colon, const char* end) {
         std::string field(start, colon);
         ++colon;
-        while (colon < end && isspace(*colon)) { ++colon; } // 去掉冒号后的空格
+        // 使用 unsigned char 转换避免负值 char 导致的未定义行为
+        while (colon < end && isspace(static_cast<unsigned char>(*colon))) { ++colon; }
         std::string value(colon, end);
-        while (!value.empty() && isspace(value[value.size()-1])) { value.pop_back(); } // 去掉末尾空格
+        while (!value.empty() && isspace(static_cast<unsigned char>(value[value.size()-1]))) { value.pop_back(); }
         headers_[field] = value;
     }
 

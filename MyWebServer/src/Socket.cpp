@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <cstring>
 #include <cstdio>
+#include <sys/socket.h>
 
 void Socket::setnonlock(int client_fd)
 {
@@ -46,6 +47,13 @@ void Socket::setNonBlock()
 {
     int flags = fcntl(fd_, F_GETFL, 0);
     fcntl(fd_, F_SETFL, flags | O_NONBLOCK);
+}
+
+void Socket::shutdownWrite()
+{
+    if (fd_ >= 0) {
+        ::shutdown(fd_, SHUT_WR);
+    }
 }
 
 void Socket::setReuseAddr(bool on)

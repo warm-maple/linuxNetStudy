@@ -3,34 +3,47 @@
 #include "InetAddress.h"
 #include <functional>
 #include <iostream>
-void onMessage(const std::shared_ptr<TcpConnection>& conn, Buffer* buf)
-{
-    std::cout << "onMessage 被触发..." << std::endl;
+#include "HttpContext.h"
+#include "HttpResponse.h"
+#include "HttpRequest.h"
+void onMessage(const std::shared_ptr<TcpConnection>& conn, Buffer* buf) {
+   HttpContext &context = conn->getContext();
+    if (!context.parseRequest(buf)) {
+        conn->send("HTTP/1.1 400 Bad Request\r\n\r\n");
+        return;
+    }
 
-    
-    while (true)
-    {
-        // input_buff 变成了 buf->
-        std::string msg = buf->getMes(); 
-        
-        size_t pos = msg.find('\n');
-        
-        if (pos != std::string::npos)
-        {
-            size_t len = pos + 1; 
-            std::string one_msg = msg.substr(0, len);
-            
-            std::cout << "处理完整包: " << one_msg;
-            
-            
-            conn->send(one_msg); 
-            
-            buf->retrecv(len); 
+    if (context.gotAll()) {
+       const HttpRequest& req = context.request();
+        std::cout << "收到请求: " << req.methodString() << " " << req.path() << std::endl;
+        std::string connection = req.getHeader("Connection");
+        bool close = (connection == "close") || 
+                     (req.getVersion() == HttpRequest::kHttp10 && connection != "Keep-Alive");
+        HttpResponse response(close);
+        if (req.path() == "/") {
+            response.setStatusCode(HttpResponse::k200Ok);
+            response.setStatusMessage("OK");
+            response.setContentType("text/html");
+            response.setBody("<html><body><h1>Hello, High Performance Server!</h1></body></html>");
+        } 
+        else if (req.path() == "/hello") {
+            response.setStatusCode(HttpResponse::k200Ok);
+            response.setStatusMessage("OK");
+            response.setContentType("text/plain");
+            response.setBody("Hello World!");
         }
-        else
-        {
-            break;
+        else {
+            response.setStatusCode(HttpResponse::k404NotFound);
+            response.setStatusMessage("Not Found");
+            response.setBody("404 Sorry, not found.");
         }
+        Buffer output;
+        response.appendToBuffer(&output);
+        conn->send(output.getMes()); 
+        if (response.closeConnection()) {
+          conn->shutdown(); 
+        }
+        context.reset();
     }
 }
 int main()

@@ -9,6 +9,8 @@ file(REMOVE_RECURSE
   "CMakeFiles/server.dir/src/EventLoop.cpp.o.d"
   "CMakeFiles/server.dir/src/HttpContext.cpp.o"
   "CMakeFiles/server.dir/src/HttpContext.cpp.o.d"
+  "CMakeFiles/server.dir/src/HttpResponse.cpp.o"
+  "CMakeFiles/server.dir/src/HttpResponse.cpp.o.d"
   "CMakeFiles/server.dir/src/InetAddress.cpp.o"
   "CMakeFiles/server.dir/src/InetAddress.cpp.o.d"
   "CMakeFiles/server.dir/src/Socket.cpp.o"

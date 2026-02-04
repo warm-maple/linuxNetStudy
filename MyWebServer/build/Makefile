@@ -249,6 +249,30 @@ src/HttpContext.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/HttpContext.cpp.s
 .PHONY : src/HttpContext.cpp.s
 
+src/HttpResponse.o: src/HttpResponse.cpp.o
+.PHONY : src/HttpResponse.o
+
+# target to build an object file
+src/HttpResponse.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/HttpResponse.cpp.o
+.PHONY : src/HttpResponse.cpp.o
+
+src/HttpResponse.i: src/HttpResponse.cpp.i
+.PHONY : src/HttpResponse.i
+
+# target to preprocess a source file
+src/HttpResponse.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/HttpResponse.cpp.i
+.PHONY : src/HttpResponse.cpp.i
+
+src/HttpResponse.s: src/HttpResponse.cpp.s
+.PHONY : src/HttpResponse.s
+
+# target to generate assembly for a file
+src/HttpResponse.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/HttpResponse.cpp.s
+.PHONY : src/HttpResponse.cpp.s
+
 src/InetAddress.o: src/InetAddress.cpp.o
 .PHONY : src/InetAddress.o
 
@@ -393,6 +417,9 @@ help:
 	@echo "... src/HttpContext.o"
 	@echo "... src/HttpContext.i"
 	@echo "... src/HttpContext.s"
+	@echo "... src/HttpResponse.o"
+	@echo "... src/HttpResponse.i"
+	@echo "... src/HttpResponse.s"
 	@echo "... src/InetAddress.o"
 	@echo "... src/InetAddress.i"
 	@echo "... src/InetAddress.s"

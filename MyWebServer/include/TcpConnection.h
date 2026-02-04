@@ -6,7 +6,7 @@
 #include <memory>
 #include "Channel.h"
 #include "Socket.h"
-
+#include "HttpContext.h"
 class TcpConnection : public std::enable_shared_from_this<TcpConnection>
 {
 public:
@@ -17,8 +17,10 @@ public:
 
     void setCloseCallback(const CloseCallback &cb);
     void send(const std::string &msg);
+    void shutdown();
     void handleWrite();
     void setMessageCallBack(const MessageCallBack &cb);
+    HttpContext&getContext(){return context_;}
 private:
     void handleClose();
     void handleRead();
@@ -29,5 +31,5 @@ private:
     Buffer input_buff;
     Buffer output_buff;
     MessageCallBack messageCallBack;
-
+    HttpContext context_;
 };

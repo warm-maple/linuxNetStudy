@@ -194,8 +194,11 @@ CMakeFiles/server.dir/src/main.cpp.o: \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/x86_64-linux-gnu/bits/types/error_t.h \
  /usr/include/c++/11/bits/charconv.h \
- /usr/include/c++/11/bits/basic_string.tcc /usr/include/c++/11/map \
- /usr/include/c++/11/bits/stl_tree.h /usr/include/c++/11/bits/stl_map.h \
+ /usr/include/c++/11/bits/basic_string.tcc \
+ /home/lls/workspace/Linuxnet.study/MyWebServer/include/HttpContext.h \
+ /home/lls/workspace/Linuxnet.study/MyWebServer/include/HttpRequest.h \
+ /usr/include/c++/11/map /usr/include/c++/11/bits/stl_tree.h \
+ /usr/include/c++/11/bits/stl_map.h \
  /usr/include/c++/11/bits/stl_multimap.h /usr/include/c++/11/iostream \
  /usr/include/c++/11/ostream /usr/include/c++/11/ios \
  /usr/include/c++/11/bits/ios_base.h \
@@ -214,4 +217,7 @@ CMakeFiles/server.dir/src/main.cpp.o: \
  /usr/include/c++/11/bits/locale_facets.tcc \
  /usr/include/c++/11/bits/basic_ios.tcc \
  /usr/include/c++/11/bits/ostream.tcc /usr/include/c++/11/istream \
- /usr/include/c++/11/bits/istream.tcc
+ /usr/include/c++/11/bits/istream.tcc \
+ /home/lls/workspace/Linuxnet.study/MyWebServer/include/HttpContext.h \
+ /home/lls/workspace/Linuxnet.study/MyWebServer/include/HttpResponse.h \
+ /home/lls/workspace/Linuxnet.study/MyWebServer/include/HttpRequest.h

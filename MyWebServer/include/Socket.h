@@ -21,6 +21,9 @@ public:
     // helper for external use
     static void setnonlock(int client_fd);
 
+    // shutdown write half of the connection
+    void shutdownWrite();
+
 private:
     int fd_;
 };

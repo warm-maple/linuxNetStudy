@@ -88,3 +88,9 @@ void TcpConnection::handleWrite(){
         }
     }
 }
+
+void TcpConnection::shutdown()
+{
+    // Gracefully shutdown the write side of the connection
+    socket_->shutdownWrite();
+}

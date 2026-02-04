@@ -7,6 +7,10 @@ bool HttpContext::parseRequest(Buffer* buf) {
     bool ok = true;
     bool hasMore = true;
     while (hasMore) {
+        // 检查 buffer 是否为空，避免 nullptr 问题
+        if (buf->readableBytes() == 0) {
+            break;
+        }
         if (state_ == kExpectRequestLine) {
             const char* crlf = std::search(buf->peek(), buf->peek() + buf->readableBytes(), "\r\n", "\r\n" + 2);
             
