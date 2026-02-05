@@ -1,0 +1,13 @@
+myServer
+myClient
+input.txt
+server
+client
+/build/
+/dist/
+/target/
+/out/
+*.exe
+*.jar
+node_modules/
+.env.local
