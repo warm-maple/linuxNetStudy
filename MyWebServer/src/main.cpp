@@ -51,8 +51,10 @@ int main()
     
     EventLoop loop;
     InetAddress addr(8888);
-    TcpServer server(loop, addr);
+    TcpServer server(&loop, addr);
+    server.setThreadNum(4);  
     server.setMessageCallback(onMessage);
+    server.start();
 
     loop.loop();
     return 0;

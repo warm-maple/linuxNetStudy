@@ -1,28 +1,61 @@
-// TcpServer.cpp - implementations
-#include "../include/TcpServer.h"
+#include "TcpServer.h"
 #include <iostream>
-#include <functional>
 
-TcpServer::TcpServer(EventLoop &loop_, InetAddress addr) : loop(loop_), acceptor(loop.getFd(), addr)
+TcpServer::TcpServer(EventLoop *loop, const InetAddress &addr, const std::string& nameArg)
+    : loop_(loop),
+      ipPort_(addr.toIpPort()),
+      name_(nameArg),
+      acceptor_(new Acceptor(loop, addr)),
+      threadPool_(new EventLoopThreadPool(loop, name_))
 {
-    acceptor.setNewConnectionCallback(std::bind(&TcpServer::newConnection, this, std::placeholders::_1, std::placeholders::_2));
+    
+    acceptor_->setNewConnectionCallback(std::bind(&TcpServer::newConnection, this, 
+        std::placeholders::_1, std::placeholders::_2));
 }
 
-TcpServer::~TcpServer() {}
-void TcpServer::setMessageCallback(const std::function<void(const std::shared_ptr<TcpConnection>&, Buffer*)>& cc){
-    cb = cc;
-}
-void TcpServer::removeConnection(int connfd)
-{
-    std::cout << "TcpServer 移除连接 FD=" << connfd << std::endl;
-    connections.erase(connfd);
+TcpServer::~TcpServer() {
+    for (auto& item : connections_) {
+        auto conn = item.second;
+        item.second.reset();
+        conn->getLoop()->runInLoop(std::bind(&TcpConnection::connectDestroyed, conn));
+    }
 }
 
-void TcpServer::newConnection(int connfd, const InetAddress &addr)
-{
-    std::cout << "新连接建立！FD = " << connfd << std::endl;
-    auto conn = std::make_shared<TcpConnection>(loop.getFd(), connfd);
-    conn->setMessageCallBack(cb);
+void TcpServer::setThreadNum(int numThreads) {
+    threadPool_->setThreadNum(numThreads);
+}
+void TcpServer::start() {
+    threadPool_->start();
+    loop_->runInLoop(std::bind(&Acceptor::listen, acceptor_.get()));
+}
+
+void TcpServer::newConnection(int sockfd, const InetAddress &peerAddr) {
+    EventLoop *ioLoop = threadPool_->getNextLoop();
+    std::string connName = name_ + "-" + ipPort_ + "#" + std::to_string(sockfd);
+    std::cout << "TcpServer::newConnection [" << name_ << "] - new connection [" 
+              << connName << "] from " << peerAddr.toIpPort() << std::endl;
+    auto conn = std::make_shared<TcpConnection>(ioLoop, connName, sockfd, peerAddr);
+    conn->setConnectionCallback(connectionCallback_);
+    conn->setMessageCallback(messageCallback_);
     conn->setCloseCallback(std::bind(&TcpServer::removeConnection, this, std::placeholders::_1));
-    connections[connfd] = conn;
+
+    connections_[sockfd] = conn;
+    ioLoop->runInLoop(std::bind(&TcpConnection::connectEstablished, conn));
+}
+
+void TcpServer::removeConnection(int connfd) {
+    loop_->runInLoop(std::bind(&TcpServer::removeConnectionInLoop, this, connfd));
+}
+
+void TcpServer::removeConnectionInLoop(int connfd) {
+    std::cout << "TcpServer::removeConnectionInLoop [" << name_ << "] - connection fd:" << connfd << std::endl;
+    
+    auto it = connections_.find(connfd);
+    if (it != connections_.end()) {
+        auto conn = it->second;
+        connections_.erase(it);
+        
+        EventLoop* ioLoop = conn->getLoop();
+        ioLoop->runInLoop(std::bind(&TcpConnection::connectDestroyed, conn));
+    }
 }

@@ -225,6 +225,54 @@ src/EventLoop.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/EventLoop.cpp.s
 .PHONY : src/EventLoop.cpp.s
 
+src/EventLoopThread.o: src/EventLoopThread.cpp.o
+.PHONY : src/EventLoopThread.o
+
+# target to build an object file
+src/EventLoopThread.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/EventLoopThread.cpp.o
+.PHONY : src/EventLoopThread.cpp.o
+
+src/EventLoopThread.i: src/EventLoopThread.cpp.i
+.PHONY : src/EventLoopThread.i
+
+# target to preprocess a source file
+src/EventLoopThread.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/EventLoopThread.cpp.i
+.PHONY : src/EventLoopThread.cpp.i
+
+src/EventLoopThread.s: src/EventLoopThread.cpp.s
+.PHONY : src/EventLoopThread.s
+
+# target to generate assembly for a file
+src/EventLoopThread.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/EventLoopThread.cpp.s
+.PHONY : src/EventLoopThread.cpp.s
+
+src/EventLoopThreadPool.o: src/EventLoopThreadPool.cpp.o
+.PHONY : src/EventLoopThreadPool.o
+
+# target to build an object file
+src/EventLoopThreadPool.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/EventLoopThreadPool.cpp.o
+.PHONY : src/EventLoopThreadPool.cpp.o
+
+src/EventLoopThreadPool.i: src/EventLoopThreadPool.cpp.i
+.PHONY : src/EventLoopThreadPool.i
+
+# target to preprocess a source file
+src/EventLoopThreadPool.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/EventLoopThreadPool.cpp.i
+.PHONY : src/EventLoopThreadPool.cpp.i
+
+src/EventLoopThreadPool.s: src/EventLoopThreadPool.cpp.s
+.PHONY : src/EventLoopThreadPool.s
+
+# target to generate assembly for a file
+src/EventLoopThreadPool.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/server.dir/build.make CMakeFiles/server.dir/src/EventLoopThreadPool.cpp.s
+.PHONY : src/EventLoopThreadPool.cpp.s
+
 src/HttpContext.o: src/HttpContext.cpp.o
 .PHONY : src/HttpContext.o
 
@@ -414,6 +462,12 @@ help:
 	@echo "... src/EventLoop.o"
 	@echo "... src/EventLoop.i"
 	@echo "... src/EventLoop.s"
+	@echo "... src/EventLoopThread.o"
+	@echo "... src/EventLoopThread.i"
+	@echo "... src/EventLoopThread.s"
+	@echo "... src/EventLoopThreadPool.o"
+	@echo "... src/EventLoopThreadPool.i"
+	@echo "... src/EventLoopThreadPool.s"
 	@echo "... src/HttpContext.o"
 	@echo "... src/HttpContext.i"
 	@echo "... src/HttpContext.s"

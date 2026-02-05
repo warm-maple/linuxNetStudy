@@ -1,96 +1,145 @@
-// TcpConnection.cpp - implementations
+// TcpConnection.cpp - 支持多线程的 TCP 连接实现
 #include "../include/TcpConnection.h"
+#include "../include/EventLoop.h"
 #include <iostream>
 #include <errno.h>
 #include <sys/socket.h>
 #include <unistd.h>
 
-TcpConnection::TcpConnection(int epfd, int sockfd)
-    : socket_(new Socket(sockfd)), channel_(new Channel(epfd, sockfd)), input_buff()
+TcpConnection::TcpConnection(EventLoop* loop, const std::string& name, int sockfd, const InetAddress& peerAddr)
+    : loop_(loop),
+      name_(name),
+      state_(kConnecting),
+      socket_(new Socket(sockfd)),
+      channel_(new Channel(loop->getFd(), sockfd)),
+      peerAddr_(peerAddr)
 {
     socket_->setNonBlock();
     channel_->setReadCallback(std::bind(&TcpConnection::handleRead, this));
-    channel_->enableReading();
     channel_->setWriteCallback(std::bind(&TcpConnection::handleWrite, this));
 }
 
-TcpConnection::~TcpConnection() {}
+TcpConnection::~TcpConnection() {
+    std::cout << "TcpConnection::dtor[" << name_ << "] fd=" << socket_->fd() << std::endl;
+}
 
-void TcpConnection::setCloseCallback(const CloseCallback &cb) { closeCallback_ = cb; }
-
-void TcpConnection::handleClose()
-{
-    std::cout << "客户端(" << socket_->fd() << ")断开连接" << std::endl;
-    channel_->removeFromEpoll();
-    if (closeCallback_)
-    {
-        closeCallback_(socket_->fd());
+void TcpConnection::connectEstablished() {
+    setState(kConnected);
+    channel_->enableReading();
+    if (connectionCallback_) {
+        connectionCallback_(shared_from_this());
     }
 }
-void TcpConnection::setMessageCallBack(const TcpConnection::MessageCallBack &cb) {
-    messageCallBack = cb;
-}
-void TcpConnection::handleRead()
-{
-    auto guard = shared_from_this();
-    ssize_t n = input_buff.read(socket_->fd());
-    std::cout << "收到客户端(" << socket_->fd() << ")消息" << std::endl;
-    if (n > 0)
-    {
-        if(messageCallBack){
-            messageCallBack( shared_from_this(),&input_buff);
-        }
-    }
-    else if (n == 0)
-    {
-        std::cout << "客户端(" << socket_->fd() << ")断开连接" << std::endl;
+
+void TcpConnection::connectDestroyed() {
+    if (state_ == kConnected) {
+        setState(kDisconnected);
         channel_->removeFromEpoll();
+        if (connectionCallback_) {
+            connectionCallback_(shared_from_this());
+        }
+    }
+    channel_->removeFromEpoll();
+}
+
+void TcpConnection::handleRead() {
+    auto guard = shared_from_this();
+    ssize_t n = inputBuffer_.read(socket_->fd());
+    
+    if (n > 0) {
+        if (messageCallback_) {
+            messageCallback_(shared_from_this(), &inputBuffer_);
+        }
+    } else if (n == 0) {
         handleClose();
-        input_buff.buffclear();
-    }
-    else
-    {
-        if (errno != EAGAIN && errno != EWOULDBLOCK)
-        {
-            perror("read error");
-            handleClose();
+    } else {
+        if (errno != EAGAIN && errno != EWOULDBLOCK) {
+            perror("TcpConnection::handleRead");
+            handleError();
         }
     }
 }
-void TcpConnection::send(const std::string &msg)
-{
-    size_t nwrote = 0;
-    size_t remaining = msg.size();
-    if (!channel_->isWriting() && output_buff.readableBytes() == 0) {
-        nwrote = ::send(socket_->fd(), msg.data(), msg.size(), 0);
-        if (nwrote >= 0) {
-            remaining = msg.size() - nwrote;
-        } else {
-            if (errno != EWOULDBLOCK) perror("send error");
-            nwrote = 0; 
-        }
-    }
-    if (remaining > 0) {
-        output_buff.write(msg.data() + nwrote, remaining);
-        if (!channel_->isWriting()) {
-            channel_->enableWriting(); 
-        }
-    }
-}
-void TcpConnection::handleWrite(){
+
+void TcpConnection::handleWrite() {
     if (channel_->isWriting()) {
-        ssize_t n = ::send(socket_->fd(), output_buff.peek(), output_buff.readableBytes(), 0);
+        ssize_t n = ::send(socket_->fd(), outputBuffer_.peek(), outputBuffer_.readableBytes(), 0);
         if (n > 0) {
-            output_buff.retrecv(n); 
-            if (output_buff.readableBytes() == 0) {
+            outputBuffer_.retrecv(n);
+            if (outputBuffer_.readableBytes() == 0) {
                 channel_->disableWriting();
+                if (state_ == kDisconnecting) {
+                    shutdownInLoop();
+                }
             }
         }
     }
 }
 
-void TcpConnection::shutdown()
-{
-    // Gracefully shutdown the write side of the connection
-    socket_->shutdownWrite();
+void TcpConnection::handleClose() {
+    std::cout << "TcpConnection::handleClose [" << name_ << "] fd=" << socket_->fd() << std::endl;
+    setState(kDisconnected);
+    channel_->removeFromEpoll();
+    
+    auto guardThis = shared_from_this();
+    if (connectionCallback_) {
+        connectionCallback_(guardThis);
+    }
+    if (closeCallback_) {
+        closeCallback_(socket_->fd());
+    }
+}
+
+void TcpConnection::handleError() {
+    // 错误处理
+    perror("TcpConnection::handleError");
+}
+
+void TcpConnection::send(const std::string &msg) {
+    if (state_ == kConnected) {
+        if (loop_->isInLoopThread()) {
+            sendInLoop(msg);
+        } else {
+            // 跨线程发送，需要通过 runInLoop
+            loop_->runInLoop(std::bind(&TcpConnection::sendInLoop, this, msg));
+        }
+    }
+}
+
+void TcpConnection::sendInLoop(const std::string& msg) {
+    ssize_t nwrote = 0;
+    size_t remaining = msg.size();
+    
+    // 如果没有在写并且输出缓冲区为空，尝试直接发送
+    if (!channel_->isWriting() && outputBuffer_.readableBytes() == 0) {
+        nwrote = ::send(socket_->fd(), msg.data(), msg.size(), 0);
+        if (nwrote >= 0) {
+            remaining = msg.size() - nwrote;
+        } else {
+            if (errno != EWOULDBLOCK) {
+                perror("TcpConnection::sendInLoop");
+            }
+            nwrote = 0;
+        }
+    }
+    
+    // 如果还有剩余数据，放入输出缓冲区
+    if (remaining > 0) {
+        outputBuffer_.write(msg.data() + nwrote, remaining);
+        if (!channel_->isWriting()) {
+            channel_->enableWriting();
+        }
+    }
+}
+
+void TcpConnection::shutdown() {
+    if (state_ == kConnected) {
+        setState(kDisconnecting);
+        loop_->runInLoop(std::bind(&TcpConnection::shutdownInLoop, this));
+    }
+}
+
+void TcpConnection::shutdownInLoop() {
+    if (!channel_->isWriting()) {
+        socket_->shutdownWrite();
+    }
 }
