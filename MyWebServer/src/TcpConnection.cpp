@@ -6,6 +6,9 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
+// 默认连接空闲超时时间（秒）
+static constexpr double kDefaultIdleTimeout = 20.0;
+
 TcpConnection::TcpConnection(EventLoop* loop, const std::string& name, int sockfd, const InetAddress& peerAddr)
     : loop_(loop),
       name_(name),
@@ -29,6 +32,14 @@ void TcpConnection::connectEstablished() {
     if (connectionCallback_) {
         connectionCallback_(shared_from_this());
     }
+    // 建立连接时添加一个一次性超时定时器（若需要自动断开空闲连接）
+    auto weak = weak_from_this();
+    timerId_ = loop_->addTimer([weak]() {
+        if (auto conn = weak.lock()) {
+            // 在 loop 线程中触发完整关闭流程
+            conn->forceClose();
+        }
+    }, addTime(Timestamp::now(), kDefaultIdleTimeout), 0.0);
 }
 
 void TcpConnection::connectDestroyed() {
@@ -50,6 +61,8 @@ void TcpConnection::handleRead() {
         if (messageCallback_) {
             messageCallback_(shared_from_this(), &inputBuffer_);
         }
+        // 有数据到达，重置空闲超时定时器
+        resetConnectionTimer();
     } else if (n == 0) {
         handleClose();
     } else {
@@ -87,6 +100,8 @@ void TcpConnection::handleClose() {
     if (closeCallback_) {
         closeCallback_(socket_->fd());
     }
+    // 连接关闭时取消关联的定时器
+    cancelConnectionTimer();
 }
 
 void TcpConnection::handleError() {
@@ -141,5 +156,33 @@ void TcpConnection::shutdown() {
 void TcpConnection::shutdownInLoop() {
     if (!channel_->isWriting()) {
         socket_->shutdownWrite();
+    }
+}
+
+void TcpConnection::resetConnectionTimer() {
+    // 先取消已有定时器（如果存在），然后添加新的超时定时器
+    if (timerId_) {
+        loop_->cancelTimer(timerId_);
+        timerId_ = nullptr;
+    }
+    auto weak = weak_from_this();
+    timerId_ = loop_->addTimer([weak]() {
+        if (auto conn = weak.lock()) {
+            conn->forceClose();
+        }
+    }, addTime(Timestamp::now(), kDefaultIdleTimeout), 0.0);
+}
+
+void TcpConnection::forceClose() {
+    // 在所属 EventLoop 线程上执行完整关闭流程
+    if (state_ == kConnected || state_ == kDisconnecting) {
+        loop_->runInLoop(std::bind(&TcpConnection::handleClose, this));
+    }
+}
+
+void TcpConnection::cancelConnectionTimer() {
+    if (timerId_) {
+        loop_->cancelTimer(timerId_);
+        timerId_ = nullptr;
     }
 }

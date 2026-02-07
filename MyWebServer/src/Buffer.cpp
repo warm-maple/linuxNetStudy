@@ -65,9 +65,9 @@ void Buffer::retrecv(size_t len){
 const char* Buffer::peek() const { return (last > first) ? (buff.data() + first) : nullptr; }
 
 void Buffer::retrieveUntil(const char* end) {
-    // 计算需要移动的字节数
+    
     const char* begin = peek();
     if (begin && end > begin) {
-        retrecv(static_cast<size_t>(end - begin));  // 复用已有的 retrecv()
+        retrecv(static_cast<size_t>(end - begin));  
     }
 }

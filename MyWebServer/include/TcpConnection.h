@@ -10,6 +10,7 @@
 #include "Channel.h"
 #include "Socket.h"
 #include "HttpContext.h"
+#include "TimerQueue.h"
 
 class EventLoop;
 
@@ -43,7 +44,14 @@ public:
     // 连接销毁时调用
     void connectDestroyed();
 
+    // 强制关闭连接（从 EventLoop 线程安全地触发完整关闭流程）
+    void forceClose();
+
     HttpContext& getContext() { return context_; }
+
+    // 重置或取消连接相关的定时器
+    void resetConnectionTimer();
+    void cancelConnectionTimer();
 
 private:
     enum StateE { kDisconnected, kConnecting, kConnected, kDisconnecting };
@@ -72,4 +80,6 @@ private:
     Buffer inputBuffer_;
     Buffer outputBuffer_;
     HttpContext context_;
+    // 连接对应的定时器句柄（用于超时检测等）
+    TimerQueue::TimerId timerId_ = nullptr;
 };

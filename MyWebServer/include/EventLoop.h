@@ -8,6 +8,7 @@
 #include <atomic>
 #include <thread>
 #include <memory>
+#include "TimerQueue.h"
 
 class EventLoop {
 public:
@@ -30,6 +31,10 @@ public:
     // 唤醒阻塞的 epoll_wait
     void wakeup();
 
+    // 定时器接口：在 EventLoop 上添加定时器（转发到内部 TimerQueue）
+    TimerQueue::TimerId addTimer(TimerQueue::TimerCallback cb, Timestamp when, double interval);
+    void cancelTimer(TimerQueue::TimerId id);
+
     // 判断当前是否在 EventLoop 所属线程
     bool isInLoopThread() const { return threadId_ == std::this_thread::get_id(); }
 
@@ -50,6 +55,9 @@ private:
     // 用于唤醒 epoll_wait
     int wakeupFd_;
     std::unique_ptr<Channel> wakeupChannel_;
+
+    // 定时器队列，负责管理定时器（集成到 EventLoop）
+    std::unique_ptr<TimerQueue> timerQueue_;
 
     // 待执行的回调函数队列
     std::mutex mutex_;

@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <cstdio>
 #include <cassert>
+#include "../include/TimerQueue.h"
 
 // 创建用于唤醒的 eventfd
 static int createEventfd() {
@@ -25,6 +26,7 @@ EventLoop::EventLoop()
       threadId_(std::this_thread::get_id()),
       wakeupFd_(createEventfd()),
       wakeupChannel_(new Channel(epfd_, wakeupFd_)),
+      timerQueue_(new TimerQueue(this)),
       callingPendingFunctors_(false)
 {
     wakeupChannel_->setReadCallback(std::bind(&EventLoop::handleWakeup, this));
@@ -126,6 +128,21 @@ void EventLoop::doPendingFunctors() {
     }
     
     callingPendingFunctors_ = false;
+}
+
+// 将定时器添加到 EventLoop 的 TimerQueue 中，返回 TimerId
+TimerQueue::TimerId EventLoop::addTimer(TimerQueue::TimerCallback cb, Timestamp when, double interval) {
+    if (timerQueue_) {
+        return timerQueue_->addTimer(std::move(cb), when, interval);
+    }
+    return nullptr;
+}
+
+// 取消定时器
+void EventLoop::cancelTimer(TimerQueue::TimerId id) {
+    if (timerQueue_ && id) {
+        timerQueue_->cancel(id);
+    }
 }
 
 void EventLoop::updateChannel(Channel* channel) {

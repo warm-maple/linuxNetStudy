@@ -7,7 +7,6 @@ bool HttpContext::parseRequest(Buffer* buf) {
     bool ok = true;
     bool hasMore = true;
     while (hasMore) {
-        // 检查 buffer 是否为空，避免 nullptr 问题
         if (buf->readableBytes() == 0) {
             break;
         }
