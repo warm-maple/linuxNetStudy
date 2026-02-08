@@ -16,7 +16,6 @@ TimerQueue::TimerQueue(EventLoop* loop)
 }
 TimerQueue::~TimerQueue()
 {
-    timerfdChannel_.disableWriting();
     timerfdChannel_.removeFromEpoll();
     ::close(timerfd_);
     for (const auto& entry : timers_) {
@@ -26,8 +25,7 @@ TimerQueue::~TimerQueue()
 using TimerId = Timer*;
 TimerId TimerQueue::addTimer(TimerCallback cb, Timestamp when, double interval)
 {
-    // 立即分配 Timer 对象并返回句柄（Timer*）。
-    // 实际插入 timers_ 在 loop 线程中执行以保证线程安全。
+
     Timer* timer = new Timer(cb, when, interval);
     loop_->runInLoop([this, timer]() {
         bool earliestChanged = false;
@@ -82,19 +80,17 @@ void TimerQueue::resetTimerfd(int timerfd, Timestamp expiration)
     void TimerQueue::cancel(TimerId id)
     {
         if (!id) return;
-        // 在 loop 线程中执行删除操作，保证线程安全
+
         loop_->runInLoop([this, id]() {
-            // 在 timers_ 中查找所有匹配的 Timer* 并删除
+
             for (auto it = timers_.begin(); it != timers_.end(); ) {
                 if (it->second == id) {
-                    // 删除对象并从集合中移除
                     delete it->second;
                     it = timers_.erase(it);
                 } else {
                     ++it;
                 }
             }
-            // 重新设置最近的定时器
             if (!timers_.empty()) {
                 resetTimerfd(timerfd_, timers_.begin()->first);
             }

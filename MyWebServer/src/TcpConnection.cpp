@@ -6,7 +6,7 @@
 #include <sys/socket.h>
 #include <unistd.h>
 
-// 默认连接空闲超时时间（秒）
+
 static constexpr double kDefaultIdleTimeout = 20.0;
 
 TcpConnection::TcpConnection(EventLoop* loop, const std::string& name, int sockfd, const InetAddress& peerAddr)
@@ -32,11 +32,10 @@ void TcpConnection::connectEstablished() {
     if (connectionCallback_) {
         connectionCallback_(shared_from_this());
     }
-    // 建立连接时添加一个一次性超时定时器（若需要自动断开空闲连接）
+
     auto weak = weak_from_this();
     timerId_ = loop_->addTimer([weak]() {
         if (auto conn = weak.lock()) {
-            // 在 loop 线程中触发完整关闭流程
             conn->forceClose();
         }
     }, addTime(Timestamp::now(), kDefaultIdleTimeout), 0.0);
@@ -61,7 +60,7 @@ void TcpConnection::handleRead() {
         if (messageCallback_) {
             messageCallback_(shared_from_this(), &inputBuffer_);
         }
-        // 有数据到达，重置空闲超时定时器
+        
         resetConnectionTimer();
     } else if (n == 0) {
         handleClose();
@@ -100,12 +99,12 @@ void TcpConnection::handleClose() {
     if (closeCallback_) {
         closeCallback_(socket_->fd());
     }
-    // 连接关闭时取消关联的定时器
+
     cancelConnectionTimer();
 }
 
 void TcpConnection::handleError() {
-    // 错误处理
+
     perror("TcpConnection::handleError");
 }
 
@@ -114,8 +113,8 @@ void TcpConnection::send(const std::string &msg) {
         if (loop_->isInLoopThread()) {
             sendInLoop(msg);
         } else {
-            // 跨线程发送，需要通过 runInLoop
-            loop_->runInLoop(std::bind(&TcpConnection::sendInLoop, this, msg));
+
+            loop_->runInLoop(std::bind(&TcpConnection::sendInLoop, shared_from_this(), msg));
         }
     }
 }
@@ -124,7 +123,7 @@ void TcpConnection::sendInLoop(const std::string& msg) {
     ssize_t nwrote = 0;
     size_t remaining = msg.size();
     
-    // 如果没有在写并且输出缓冲区为空，尝试直接发送
+
     if (!channel_->isWriting() && outputBuffer_.readableBytes() == 0) {
         nwrote = ::send(socket_->fd(), msg.data(), msg.size(), 0);
         if (nwrote >= 0) {
@@ -137,7 +136,7 @@ void TcpConnection::sendInLoop(const std::string& msg) {
         }
     }
     
-    // 如果还有剩余数据，放入输出缓冲区
+
     if (remaining > 0) {
         outputBuffer_.write(msg.data() + nwrote, remaining);
         if (!channel_->isWriting()) {
@@ -160,7 +159,7 @@ void TcpConnection::shutdownInLoop() {
 }
 
 void TcpConnection::resetConnectionTimer() {
-    // 先取消已有定时器（如果存在），然后添加新的超时定时器
+
     if (timerId_) {
         loop_->cancelTimer(timerId_);
         timerId_ = nullptr;
@@ -174,9 +173,9 @@ void TcpConnection::resetConnectionTimer() {
 }
 
 void TcpConnection::forceClose() {
-    // 在所属 EventLoop 线程上执行完整关闭流程
+
     if (state_ == kConnected || state_ == kDisconnecting) {
-        loop_->runInLoop(std::bind(&TcpConnection::handleClose, this));
+        loop_->runInLoop(std::bind(&TcpConnection::handleClose, shared_from_this()));
     }
 }
 

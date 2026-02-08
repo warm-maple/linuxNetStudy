@@ -62,7 +62,7 @@ void Buffer::retrecv(size_t len){
     }
 }
 
-const char* Buffer::peek() const { return (last > first) ? (buff.data() + first) : nullptr; }
+const char* Buffer::peek() const { return buff.data() + first; }
 
 void Buffer::retrieveUntil(const char* end) {
     

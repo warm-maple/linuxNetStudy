@@ -9,7 +9,6 @@
 #include <cassert>
 #include "../include/TimerQueue.h"
 
-// 创建用于唤醒的 eventfd
 static int createEventfd() {
     int evtfd = ::eventfd(0, EFD_NONBLOCK | EFD_CLOEXEC);
     if (evtfd < 0) {
@@ -130,7 +129,7 @@ void EventLoop::doPendingFunctors() {
     callingPendingFunctors_ = false;
 }
 
-// 将定时器添加到 EventLoop 的 TimerQueue 中，返回 TimerId
+
 TimerQueue::TimerId EventLoop::addTimer(TimerQueue::TimerCallback cb, Timestamp when, double interval) {
     if (timerQueue_) {
         return timerQueue_->addTimer(std::move(cb), when, interval);
@@ -138,17 +137,10 @@ TimerQueue::TimerId EventLoop::addTimer(TimerQueue::TimerCallback cb, Timestamp 
     return nullptr;
 }
 
-// 取消定时器
+
 void EventLoop::cancelTimer(TimerQueue::TimerId id) {
     if (timerQueue_ && id) {
         timerQueue_->cancel(id);
     }
 }
 
-void EventLoop::updateChannel(Channel* channel) {
-    
-}
-
-void EventLoop::removeChannel(Channel* channel) {
-    
-}
